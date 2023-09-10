@@ -1,0 +1,146 @@
+﻿@page "/fetchdata"
+@using System.Runtime.CompilerServices
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (_forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in _forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private WeatherForecast[]? _forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // MyService.Message();
+        // _forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        _forecasts = await MyService.GetForecastsAsync();
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+    public class MyService
+    {
+        public MyService()
+        {
+        }
+        public static void Message()
+        {
+            Console.WriteLine("I am Service");
+        }
+        public static WeatherForecast[] GetForecasts()
+        {
+            WeatherForecast[] ar =
+            {
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2021, 1, 2),
+                    Summary = "good",
+                    TemperatureC = 25
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2022, 3, 4),
+                    Summary = "Bad",
+                    TemperatureC = 26
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2023, 5, 6),
+                    Summary = "BadOnly",
+                    TemperatureC = 32
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2024, 7, 8),
+                    Summary = "Norm",
+                    TemperatureC = 42
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2023, 9, 14),
+                    Summary = "Terrible",
+                    TemperatureC = 35
+                }
+            };       
+            return ar;
+        }
+        public static Task<WeatherForecast[]> GetForecastsAsync()
+        {
+            WeatherForecast[] ar =
+            {
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2021, 1, 2),
+                    Summary = "good",
+                    TemperatureC = 25
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2022, 3, 4),
+                    Summary = "Bad",
+                    TemperatureC = 26
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2023, 5, 6),
+                    Summary = "BadOnly",
+                    TemperatureC = 32
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2024, 7, 8),
+                    Summary = "Norm",
+                    TemperatureC = 42
+                },
+                new WeatherForecast
+                {
+                    Date = new DateOnly(2023, 9, 14),
+                    Summary = "Terrible",
+                    TemperatureC = 35
+                }
+            };
+            return Task.FromResult(ar);
+        }
+    }
+}
