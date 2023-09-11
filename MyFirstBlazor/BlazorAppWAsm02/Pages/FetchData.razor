@@ -39,13 +39,19 @@ else
 
 @code {
 
+    private static readonly string[] Summaries = new[]
+    {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
+
     private WeatherForecast[]? _forecasts;
 
     protected override async Task OnInitializedAsync()
     {
         // MyService.Message();
         // _forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-        _forecasts = await MyService.GetForecastsAsync();
+        // _forecasts = await MyService.GetForecastsAsync();
+        _forecasts = await MyService.GetWeatherForecastsAsync();
     }
 
     public class WeatherForecast
@@ -61,49 +67,25 @@ else
 
     public class MyService
     {
-        public MyService()
+        public static IEnumerable<WeatherForecast> GetWeatherForecasts()
         {
-        }
-        public static void Message()
-        {
-            Console.WriteLine("I am Service");
-        }
-        public static WeatherForecast[] GetForecasts()
-        {
-            WeatherForecast[] ar =
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            }).ToArray();
+        }
+        public static Task<WeatherForecast[]> GetWeatherForecastsAsync()
+        {
+            var maxIndex = Random.Shared.Next(5, 26);
+            return Task.FromResult(Enumerable.Range(1, maxIndex).Select(index =>
                 new WeatherForecast
                 {
-                    Date = new DateOnly(2021, 1, 2),
-                    Summary = "good",
-                    TemperatureC = 25
-                },
-                new WeatherForecast
-                {
-                    Date = new DateOnly(2022, 3, 4),
-                    Summary = "Bad",
-                    TemperatureC = 26
-                },
-                new WeatherForecast
-                {
-                    Date = new DateOnly(2023, 5, 6),
-                    Summary = "BadOnly",
-                    TemperatureC = 32
-                },
-                new WeatherForecast
-                {
-                    Date = new DateOnly(2024, 7, 8),
-                    Summary = "Norm",
-                    TemperatureC = 42
-                },
-                new WeatherForecast
-                {
-                    Date = new DateOnly(2023, 9, 14),
-                    Summary = "Terrible",
-                    TemperatureC = 35
-                }
-            };       
-            return ar;
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    TemperatureC = Random.Shared.Next(-20, 58),
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                }).ToArray());
         }
         public static Task<WeatherForecast[]> GetForecastsAsync()
         {
